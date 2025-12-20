@@ -9,7 +9,6 @@ import os
 import tempfile
 import shutil
 
-# Add src directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../src'))
 
 from controllers.patient_controller import PatientController
@@ -23,7 +22,6 @@ class TestPatientController(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Set up test fixtures for the entire test class"""
-        # Create a temporary directory for test data
         cls.test_dir = tempfile.mkdtemp()
         os.environ['DATA_DIR'] = cls.test_dir
     
@@ -34,7 +32,6 @@ class TestPatientController(unittest.TestCase):
     
     def setUp(self):
         """Clear data before each test"""
-        # Clear the data directory to ensure clean state for each test
         import glob
         data_files = glob.glob(os.path.join(self.test_dir, '*.json'))
         for f in data_files:
@@ -68,7 +65,6 @@ class TestPatientController(unittest.TestCase):
         email = "test_duplicate@example.com"
         password_hash = Authentication.hash_password("Password123")
         
-        # Create first patient
         result1 = PatientController.create_patient(
             email=email,
             password_hash=password_hash,
@@ -77,7 +73,6 @@ class TestPatientController(unittest.TestCase):
         )
         self.assertTrue(result1['success'])
         
-        # Try to create another with same email
         result2 = PatientController.create_patient(
             email=email,
             password_hash=password_hash,
@@ -97,7 +92,6 @@ class TestPatientController(unittest.TestCase):
     
     def test_update_patient_success(self):
         """Test successful patient update"""
-        # Create a patient first
         email = "test_update@example.com"
         password_hash = Authentication.hash_password("Password123")
         
@@ -111,7 +105,6 @@ class TestPatientController(unittest.TestCase):
         if result['success']:
             patient_id = result['patient'].user_id
             
-            # Update the patient
             update_result = PatientController.update_patient(
                 patient_id=patient_id,
                 first_name="New",
@@ -123,7 +116,6 @@ class TestPatientController(unittest.TestCase):
     
     def test_get_appointments_empty(self):
         """Test getting appointments for a patient with no appointments"""
-        # Create a patient
         email = "test_appointments@example.com"
         password_hash = Authentication.hash_password("Password123")
         
@@ -137,7 +129,6 @@ class TestPatientController(unittest.TestCase):
         if result['success']:
             patient_id = result['patient'].user_id
             
-            # Get appointments
             appt_result = PatientController.get_appointments(patient_id)
             
             self.assertTrue(appt_result['success'])

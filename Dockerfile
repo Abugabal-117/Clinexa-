@@ -17,6 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy application code
 COPY src/ ./src/
 COPY static/ ./static/
+COPY tests/ ./tests/
 
 # Create data directory for persistent storage
 RUN mkdir -p /app/src/data
@@ -24,6 +25,7 @@ RUN mkdir -p /app/src/data
 # Set environment variables
 ENV FLASK_APP=src/app.py
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONPATH=/app/src:$PYTHONPATH
 
 # Expose port
 EXPOSE 5000

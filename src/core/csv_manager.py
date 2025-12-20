@@ -18,7 +18,6 @@ class CSVManager:
     def __init__(self):
         if self._initialized:
             return
-        # Check for DATA_DIR environment variable (for testing)
         if 'DATA_DIR' in os.environ:
             self.data_dir = os.environ['DATA_DIR']
         else:

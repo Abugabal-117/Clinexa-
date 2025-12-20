@@ -13,7 +13,6 @@ def reset_csv_manager():
     CSVManager._instance = None
     CSVManager._lock = __import__('threading').Lock()
     yield
-    # Reset after test
     CSVManager._instance = None
     CSVManager._lock = __import__('threading').Lock()
 
@@ -27,7 +26,6 @@ def app(test_data_dir, monkeypatch):
     monkeypatch.setenv('TESTING', 'True')
     monkeypatch.setenv('DATA_DIR', test_data_dir)
     
-    # Reset CSVManager to pick up new DATA_DIR
     from core.csv_manager import CSVManager
     CSVManager._instance = None
     CSVManager._lock = __import__('threading').Lock()
@@ -42,7 +40,6 @@ def app(test_data_dir, monkeypatch):
     
     yield flask_app
     
-    # Reset CSVManager after test
     CSVManager._instance = None
     CSVManager._lock = __import__('threading').Lock()
 

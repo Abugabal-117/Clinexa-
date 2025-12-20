@@ -9,7 +9,6 @@ import os
 import tempfile
 import shutil
 
-# Add src directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../src'))
 
 from controllers.user_controller import UserController
@@ -91,7 +90,6 @@ class TestUserLogin(unittest.TestCase):
         cls.test_dir = tempfile.mkdtemp()
         os.environ['DATA_DIR'] = cls.test_dir
         
-        # Clear login attempts at the start of tests
         UserController._login_attempts = {}
     
     @classmethod
@@ -117,10 +115,8 @@ class TestUserLogin(unittest.TestCase):
         """Test account lockout after multiple failed login attempts"""
         email = "testlock@example.com"
         
-        # Reset attempts
         UserController._login_attempts = {}
         
-        # Make 3 failed login attempts
         for i in range(3):
             result = UserController.login(
                 email=email,
@@ -130,10 +126,8 @@ class TestUserLogin(unittest.TestCase):
             if i < 2:
                 self.assertFalse(result['success'])
             elif i == 2:
-                # After 3 attempts, should be locked
                 self.assertFalse(result['success'])
                 if 'locked' in result['message'].lower():
-                    # Account is locked
                     self.assertIn('locked', result['message'].lower())
     
     def test_login_empty_email(self):

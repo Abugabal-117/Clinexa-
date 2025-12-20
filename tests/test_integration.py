@@ -10,7 +10,6 @@ import tempfile
 import shutil
 import json
 
-# Add src directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../src'))
 
 from app import app
@@ -26,7 +25,6 @@ class TestAppRoutes(unittest.TestCase):
         cls.test_dir = tempfile.mkdtemp()
         os.environ['DATA_DIR'] = cls.test_dir
         
-        # Configure Flask app for testing
         app.config['TESTING'] = True
         app.config['SESSION_TYPE'] = 'filesystem'
     
@@ -68,14 +66,12 @@ class TestAppRoutes(unittest.TestCase):
         }, follow_redirects=True)
         
         self.assertEqual(response.status_code, 200)
-        # Should return to login page (not redirect to dashboard)
         self.assertIn(b'Login', response.data)
     
     def test_logout_route(self):
         """Test logout route"""
         response = self.client.get('/logout')
         
-        # Should redirect to home
         self.assertIn(response.status_code, [200, 302])
     
     def test_forgot_password_page_loads(self):
@@ -100,7 +96,6 @@ class TestAppRoutes(unittest.TestCase):
         """Test that unauthenticated users are redirected from dashboard"""
         response = self.client.get('/dashboard')
         
-        # Should redirect to login
         self.assertIn(response.status_code, [302, 303, 307, 308])
 
 
@@ -112,7 +107,6 @@ class TestPasswordSecurity(unittest.TestCase):
         password = "MySecurePassword123"
         password_hash = Authentication.hash_password(password)
         
-        # Hash should not be the same as plain password
         self.assertNotEqual(password, password_hash)
     
     def test_password_hash_is_deterministic(self):
@@ -131,10 +125,8 @@ class TestPasswordSecurity(unittest.TestCase):
         
         password_hash = Authentication.hash_password(password)
         
-        # Correct password should verify
         self.assertTrue(Authentication.verify_password(password, password_hash))
         
-        # Wrong password should not verify
         self.assertFalse(Authentication.verify_password(wrong_password, password_hash))
 
 

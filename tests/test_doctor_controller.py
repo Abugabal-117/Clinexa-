@@ -9,7 +9,6 @@ import os
 import tempfile
 import shutil
 
-# Add src directory to path
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '../src'))
 
 from controllers.doctor_controller import DoctorController
@@ -36,7 +35,6 @@ class TestDoctorController(unittest.TestCase):
         """Set up test data for each test"""
         self.doctor_id = "doctor_001"
         
-        # Create a doctor for testing
         doctor_repo = RepositoryFactory.get_doctor_repository()
         doctor = Doctor(
             user_id=self.doctor_id,
@@ -67,7 +65,6 @@ class TestDoctorController(unittest.TestCase):
         date = "2025-12-25"
         time = "10:00"
         
-        # Add first time
         result1 = DoctorController.add_available_time(
             self.doctor_id,
             date,
@@ -75,7 +72,6 @@ class TestDoctorController(unittest.TestCase):
         )
         self.assertTrue(result1['success'])
         
-        # Try to add the same time again
         result2 = DoctorController.add_available_time(
             self.doctor_id,
             date,
@@ -96,7 +92,6 @@ class TestDoctorController(unittest.TestCase):
         date = "2025-12-26"
         time = "14:00"
         
-        # Add a time first
         add_result = DoctorController.add_available_time(
             self.doctor_id,
             date,
@@ -104,7 +99,6 @@ class TestDoctorController(unittest.TestCase):
         )
         
         if add_result['success']:
-            # Remove the time
             remove_result = DoctorController.remove_available_time(
                 self.doctor_id,
                 date,
@@ -131,8 +125,6 @@ class TestDoctorController(unittest.TestCase):
         """Test retrieving doctor information"""
         result = DoctorController.get_doctor(self.doctor_id)
         
-        # This test may succeed or fail depending on whether the doctor exists
-        # We just check that the response structure is correct
         self.assertIn('success', result)
         if result['success']:
             self.assertIn('doctor', result)

@@ -16,7 +16,6 @@ def test_env():
     test_dir = tempfile.mkdtemp()
     os.environ['DATA_DIR'] = test_dir
     
-    # Reset CSVManager singleton to use new DATA_DIR
     from core.csv_manager import CSVManager
     CSVManager._instance = None
     from threading import Lock
@@ -24,7 +23,6 @@ def test_env():
     
     yield test_dir
     
-    # Cleanup
     import glob
     for f in glob.glob(os.path.join(test_dir, '*.csv')):
         try:
@@ -33,7 +31,6 @@ def test_env():
             pass
     shutil.rmtree(test_dir, ignore_errors=True)
     
-    # Reset CSVManager after test
     CSVManager._instance = None
     CSVManager._lock = Lock()
 
