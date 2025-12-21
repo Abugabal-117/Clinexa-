@@ -12,6 +12,7 @@ COPY . .
 RUN mkdir -p /app/src/data
 
 ENV FLASK_APP=src/app.py
+ENV PYTHONPATH=/app/src
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 5000

@@ -7,12 +7,12 @@ import secrets
 import csv
 import os
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates', static_folder='static')
 app.secret_key = secrets.token_hex(16)
 
 def get_absolute_path(filename):
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(base_dir, 'src', 'data', filename)
+    return os.path.join(base_dir, 'data', filename)
 
 def clean_str(val):
     if val is None:
