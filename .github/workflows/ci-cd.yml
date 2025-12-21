@@ -2,26 +2,18 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, doctor-frontend, develop ]
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main, doctor-frontend, develop ]
-  schedule:
-    - cron: '0 2 * * *'
+    branches: [ main ]
 
 env:
-  # Switched to Docker Hub
   REGISTRY: docker.io
-  # Format: username/repository
   IMAGE_NAME: j4b4l/clinexa
 
 jobs:
-  # ------------------------------------------------------------------
-  # JOB 1: TESTING & LINTING
-  # ------------------------------------------------------------------
-  test:
+  validate:
     runs-on: ubuntu-latest
-    name: Run Tests
-    
+    name: Test & Security
     steps:
     - uses: actions/checkout@v3
     
@@ -36,67 +28,20 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     
-    - name: Lint with pylint
-      # Checks code quality
-      run: |
-        pip install pylint
-        # This runs pylint on the src folder but doesn't break the build on minor errors
-        find src -name "*.py" -type f | xargs pylint --disable=all --enable=E,F 2>/dev/null || echo "Linting complete"
-      continue-on-error: true
-    
     - name: Run unit tests
-      # Runs your custom test dispatcher
-      run: |
-        python run_tests_dispatch.py all
+      run: python run_tests_dispatch.py all
     
-    - name: Generate coverage report
-      run: |
-        pip install pytest-cov
-        python run_tests_dispatch.py coverage
-      continue-on-error: true
-
-  # ------------------------------------------------------------------
-  # JOB 2: SECURITY SCAN
-  # ------------------------------------------------------------------
-  security:
-    runs-on: ubuntu-latest
-    name: Security Scan
-    
-    steps:
-    - uses: actions/checkout@v3
-    
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
-    
-    - name: Install security tools
+    - name: Security scan
       run: |
         pip install bandit safety
-    
-    - name: Run Bandit security check
-      # Scans for common Python security vulnerabilities
-      run: |
-        bandit -r src/ -ll 2>/dev/null || echo "Security scan complete"
-      continue-on-error: true
-    
-    - name: Check dependencies
-      # Checks for known vulnerabilities in installed packages
-      run: |
-        pip install -r requirements.txt
-        safety check --json || echo "Safety check complete"
-      continue-on-error: true
+        bandit -r src/ -ll || true
+        safety check || true
 
-  # ------------------------------------------------------------------
-  # JOB 3: BUILD & PUSH TO DOCKER HUB
-  # ------------------------------------------------------------------
   build:
-    needs: [test, security]
+    needs: validate
     runs-on: ubuntu-latest
-    name: Build Docker Image
-    permissions:
-      contents: read
-      packages: write
+    name: Build & Push
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     
     steps:
     - uses: actions/checkout@v3
@@ -107,69 +52,25 @@ jobs:
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
       with:
-        registry: ${{ env.REGISTRY }}
-        username: ${{ secrets.DOCKER_USERNAME }}  # Reads from GitHub Secrets
-        password: ${{ secrets.DOCKER_PASSWORD }}  # Reads from GitHub Secrets
-      if: github.event_name != 'pull_request'
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
     
-    - name: Extract metadata
-      id: meta
-      uses: docker/metadata-action@v4
-      with:
-        images: ${{ env.IMAGE_NAME }}
-        tags: |
-          type=ref,event=branch
-          type=semver,pattern={{version}}
-          type=sha
-          # Adds a 'latest' tag only if we push to main
-          type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
-    
-    - name: Build and push Docker image
+    - name: Build and push
       uses: docker/build-push-action@v4
       with:
         context: .
-        # Only push if it's not a Pull Request
-        push: ${{ github.event_name != 'pull_request' }}
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        push: true
+        tags: |
+          ${{ env.IMAGE_NAME }}:latest
+          ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-  # ------------------------------------------------------------------
-  # JOB 4: DEPLOYMENT STAGES (Placeholders)
-  # ------------------------------------------------------------------
-  deploy-dev:
+  deploy:
     needs: build
     runs-on: ubuntu-latest
-    name: Deploy to Development
-    if: github.ref == 'refs/heads/develop' && github.event_name == 'push'
+    name: Deploy
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     
     steps:
-    - name: Deploy to dev environment
+    - name: Deploy to Prod
       run: |
-        echo "Simulating deployment to DEV server..."
-        echo "Pulling image: ${{ env.IMAGE_NAME }}:develop"
-
-  deploy-staging:
-    needs: build
-    runs-on: ubuntu-latest
-    name: Deploy to Staging
-    if: github.ref == 'refs/heads/doctor-frontend' && github.event_name == 'push'
-    
-    steps:
-    - name: Deploy to staging environment
-      run: |
-        echo "Simulating deployment to STAGING server..."
-        echo "Pulling image: ${{ env.IMAGE_NAME }}:doctor-frontend"
-
-  deploy-prod:
-    needs: build
-    runs-on: ubuntu-latest
-    name: Deploy to Production
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    
-    steps:
-    - name: Deploy to production environment
-      run: |
-        echo "Simulating deployment to PROD server..."
-        echo "Pulling image: ${{ env.IMAGE_NAME }}:main"
+        echo "Deploying ${{ env.IMAGE_NAME }}:latest to production..."

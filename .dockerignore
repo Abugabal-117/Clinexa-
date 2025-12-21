@@ -10,5 +10,5 @@ __pycache__/
 *.pyo
 
 # Ignore local data (so users start fresh or use volumes)
-src/data/*.csv
+# src/data/*.csv
 !src/data/.keep  # Keep this if you want to preserve the folder structure

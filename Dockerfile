@@ -12,9 +12,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
+# Ensure the data directory exists
 RUN mkdir -p src/data
 
-ENV FLASK_APP=src/app.py
+ENV PYTHONPATH=/app/src
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 5000

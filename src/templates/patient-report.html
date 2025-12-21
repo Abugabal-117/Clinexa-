@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     
     <script>
-        // دالة مهمة: بتاخد اسم المريض من القائمة وتحطه في حقل مخفي عشان يتبعت للسيرفر
         function updatePatientName() {
             var select = document.getElementById('patientSelect');
             var text = select.options[select.selectedIndex].text;
@@ -16,7 +15,7 @@
     </script>
 </head>
 <body class="doctor-dashboard-body"> <div class="nav-container">
-        <a href="{{ url_for('dashboard') }}" class="back-link" style="color: #0284c7;">
+        <a href="{{ url_for('dashboard') }}" class="back-link" style="color:
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="19" y1="12" x2="5" y2="12"></line>
                 <polyline points="12 19 5 12 12 5"></polyline>
@@ -28,15 +27,15 @@
     <div class="center-content flex-direction-column align-items-center">
 
         <div class="page-header-text">
-            <h1 style="color: #0f172a;">Patient Report Management</h1>
-            <p style="color: #64748b;">Generate and view patient medical reports</p>
+            <h1 style="color:
+            <p style="color:
         </div>
 
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 <div style="width: 100%; max-width: 1000px; margin-bottom: 20px;">
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}" style="padding: 15px; border-radius: 8px; background: #dcfce7; color: #166534; margin-bottom: 10px;">
+                    <div class="alert alert-{{ category }}" style="padding: 15px; border-radius: 8px; background:
                         {{ message }}
                     </div>
                 {% endfor %}
@@ -46,9 +45,9 @@
 
         <div class="report-grid">
 
-            <div class="content-card left-panel" style="border-top: 4px solid #0284c7;">
+            <div class="content-card left-panel" style="border-top: 4px solid
                 <div class="report-section-header">
-                    <div class="icon-box-blue" style="background: #e0f2fe; color: #0284c7;">
+                    <div class="icon-box-blue" style="background:
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
@@ -65,13 +64,13 @@
                     <div class="form-group">
                         <label>Select Patient</label>
                         <div class="input-wrapper">
-                            <svg class="input-icon" viewBox="0 0 24 24" style="color: #0284c7;">
+                            <svg class="input-icon" viewBox="0 0 24 24" style="color:
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
                             
                             <select name="patient_id" id="patientSelect" class="form-control" onchange="updatePatientName()" required 
-                                style="width: 100%; padding: 12px 12px 12px 40px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; cursor: pointer; background: white;">
+                                style="width: 100%; padding: 12px 12px 12px 40px; border: 1px solid
                                 <option value="" disabled selected>-- Choose a patient --</option>
                                 {% if patients %}
                                     {% for patient in patients %}
@@ -90,18 +89,18 @@
                         <label>Diagnosis & Details</label>
                         <textarea name="report_details" class="form-control report-textarea" rows="8"
                             placeholder="Enter symptoms, diagnosis, and treatment details..."
-                            required style="border-color: #cbd5e1; padding: 15px;"></textarea>
+                            required style="border-color:
                     </div>
 
                     <div class="report-button-group">
-                        <button type="submit" class="btn btn-blue" style="background-color: #0284c7; width: 100%;">Save Report</button>
+                        <button type="submit" class="btn btn-blue" style="background-color:
                     </div>
                 </form>
             </div>
 
-            <div class="content-card" style="border-top: 4px solid #0284c7;">
+            <div class="content-card" style="border-top: 4px solid
                 <div class="report-section-header">
-                    <div class="icon-box-blue" style="background: #e0f2fe; color: #0284c7;">
+                    <div class="icon-box-blue" style="background:
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                         </svg>
@@ -112,22 +111,22 @@
                 {% if reports and reports|length > 0 %}
                 <div class="reports-list" style="max-height: 500px; overflow-y: auto;">
                     {% for report in reports %}
-                    <div class="report-card" style="border-left: 4px solid #0284c7; margin-bottom: 15px; background: #f8fafc; padding: 15px; border-radius: 6px;">
-                        <div class="report-card-header" style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px;">
-                            <div class="report-patient-name" style="font-weight: bold; color: #0284c7;">
+                    <div class="report-card" style="border-left: 4px solid
+                        <div class="report-card-header" style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid
+                            <div class="report-patient-name" style="font-weight: bold; color:
                                 {{ report.patient_name }}
                             </div>
-                            <div class="report-date" style="font-size: 0.8rem; color: #64748b;">
+                            <div class="report-date" style="font-size: 0.8rem; color:
                                 {{ report.created_at }}
                             </div>
                         </div>
-                        <div class="report-content" style="color: #334155; font-size: 0.9rem; white-space: pre-wrap;">{{ report.details }}</div>
+                        <div class="report-content" style="color:
                     </div>
                     {% endfor %}
                 </div>
                 {% else %}
                 <div class="empty-state" style="text-align: center; padding: 40px 0;">
-                    <p class="empty-state-message" style="color: #64748b;">No reports created yet</p>
+                    <p class="empty-state-message" style="color:
                 </div>
                 {% endif %}
 
