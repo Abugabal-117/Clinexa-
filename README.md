@@ -125,4 +125,4 @@ docker run clinexa-test python run_tests_dispatch.py all
 ## Authors
 
 **CSAI203 - Team 26**
-Contact: s-ahmed.ragab@zewailcity.edu.eg
+Contact: s-mosab.gabal@zewailcity.edu.eg
